@@ -1,2 +1,2 @@
 # Task2
- task about mice
+ Task about mice. The description is in the file description.txt
