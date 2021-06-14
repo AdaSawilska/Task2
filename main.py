@@ -29,17 +29,20 @@ for phase in phases.sections():
     print(phases.gettime(phase))
 
 # creates an empty list for each room {1,2,3,4}
-for x in range(1, 5):
-    setattr(this, 'room%s' % x, [])
+
 
 for i in range(len(mice)):
+
     mouse = list(mice)[i]
 
     all_rooms = []
     all_start_times = []
     all_end_times = []
 
+
     for j in range(len(phases.sections())):
+        for x in range(1, 5):
+            setattr(this, 'room%s' % x, [])
         phase = phases.sections()[j]
 
         # Visits of a mouse to the rooms during one phase can be accesed like that:
