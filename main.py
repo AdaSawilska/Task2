@@ -24,6 +24,7 @@ print("Numer of mice: %s" % len(list(mice)))
 print(phases.sections())
 # start, end of each phase (as Unix time - https://en.wikipedia.org/wiki/Unix_time)
 phase_time = []
+print("Range of phases")
 for phase in phases.sections():
     phase_time.append(phases.gettime(phase))
     print(phases.gettime(phase))
@@ -39,26 +40,54 @@ for i in range(len(mice)):
     all_start_times = []
     all_end_times = []
 
-
+    global rest, previous_room
     for j in range(len(phases.sections())):
         for x in range(1, 5):
             setattr(this, 'room%s' % x, [])
+
+        start_times = []
+        end_times = []
+        room_numbers = []
+
+
         phase = phases.sections()[j]
+        phase_end_time = phase_time[j][1]
+        #print(phase_end_time)
 
         # Visits of a mouse to the rooms during one phase can be accesed like that:
         data.unmask_data()
         data.mask_data(*phases.gettime(phase))
         # Because of masking only visits starting in the given phase are returned.
-        start_times = data.getstarttimes(mouse)
-        end_times = data.getendtimes(mouse)
-        room_numbers = data.getaddresses(mouse)
+
+        #add the time which was oryginally in previous phase but time is from next
+        if j>0 and rest!=0 and previous_room!=0:
+            start_times.append(phase_time[j][0])
+            end_times.append(phase_time[j][0]+rest)
+            room_numbers.append(previous_room)
+            rest = 0
+            previous_room = 0
+
+
+        start_times.extend(data.getstarttimes(mouse))
+        end_times.extend(data.getendtimes(mouse))
+        room_numbers.extend(data.getaddresses(mouse))
+
+
 
         all_rooms.extend(room_numbers)
         all_start_times.extend(start_times)
         all_end_times.extend(end_times)
 
+
+
         # time spend in a room
         for change_of_room in range(len(room_numbers)):
+            if end_times[change_of_room] > phase_end_time:
+                rest = end_times[change_of_room] - phase_end_time
+                end_times[change_of_room] = phase_end_time
+                previous_room = room_numbers[change_of_room]
+
+
             if room_numbers[change_of_room] == 1:
                 room1.append(end_times[change_of_room] - start_times[change_of_room])
             elif room_numbers[change_of_room] == 2:
@@ -68,16 +97,22 @@ for i in range(len(mice)):
             elif room_numbers[change_of_room] == 4:
                 room4.append(end_times[change_of_room] - start_times[change_of_room])
 
+
+        for st, en, room in zip(start_times, end_times, room_numbers):
+             print("visit to room %d, starting %f, ending %f" % (room, st, en))
+
         time1 = sum(room1)
         time2 = sum(room2)
         time3 = sum(room3)
         time4 = sum(room4)
 
+        print("----------------")
         # writes down the data to csv file
         with open('./output/mice.csv', 'a', newline='') as csvfile:
             writer = csv.writer(csvfile, delimiter='\t')
             writer.writerow(
                 [mouse] + [phase] + ["%.5f" % time1] + ["%.5f" % time2] + ["%.5f" % time3] + ["%.5f" % time4])
+
 
     csvfile.close()
 
@@ -183,3 +218,7 @@ for m in range(0, len(mice)):
 
 result = result.reset_index(drop=True)
 result.to_csv('./output/mousepairs.csv', sep='\t')
+
+
+
+
