@@ -74,9 +74,6 @@ for i in range(len(mice)):
 
 
 
-        all_rooms.extend(room_numbers)
-        all_start_times.extend(start_times)
-        all_end_times.extend(end_times)
 
 
 
@@ -86,6 +83,7 @@ for i in range(len(mice)):
                 rest = end_times[change_of_room] - phase_end_time
                 end_times[change_of_room] = phase_end_time
                 previous_room = room_numbers[change_of_room]
+                print(end_times[change_of_room], room_numbers[change_of_room])
 
 
             if room_numbers[change_of_room] == 1:
@@ -99,7 +97,10 @@ for i in range(len(mice)):
 
 
         # for st, en, room in zip(start_times, end_times, room_numbers):
-        #      print("visit to room %d, starting %f, ending %f" % (room, st, en))
+        #      print("visit to room %d, starting %f, ending %f, phase%s" % (room, st, en, phase))
+        all_rooms.extend(room_numbers)
+        all_start_times.extend(start_times)
+        all_end_times.extend(end_times)
 
         time1 = sum(room1)
         time2 = sum(room2)
@@ -151,7 +152,7 @@ def compare_datasets(data1, data2, name1, name2, phase_time, phase_names):
     for x in data1.index:
         # loop describing which phase we consider
         for t in range(6):
-            if data1.iat[x, 2] < phase_time[t][1]:
+            if data1.iat[x, 2] <= phase_time[t][1]:
                 phase = phase_names[t]
                 # print(phase)
                 break
@@ -160,24 +161,24 @@ def compare_datasets(data1, data2, name1, name2, phase_time, phase_names):
             #conditions which describes if the time was shared in one room
             if data1.iat[x, 1] <= data2.iat[y, 1] and data1.iat[x, 0] == data2.iat[y, 0] and data1.iat[x, 2] >= data2.iat[y, 2] :
                 sharetime = data2.iat[y, 2] - data2.iat[y, 1]
-                #print(x, y, "time: %s" % sharetime, data1.iat[x, 0])
+                #print(x, y, "time: %s" % sharetime, data1.iat[x, 0], phase)
                 a=save(phase, data2.iat[y, 0], sharetime, name1, name2, list_of_phase, list_of_rooms, list_of_sharetime, list_of_mouse1, list_of_mouse2)
 
             elif data1.iat[x, 1] >= data2.iat[y, 1] and data1.iat[x, 0] == data2.iat[y, 0] and data1.iat[x, 2] >= data2.iat[y, 2] and data1.iat[x, 1] < data2.iat[y, 2]:
                 sharetime = data2.iat[y, 2] - data1.iat[x, 1]
-                #print(x, y, "time: %s" % sharetime, data1.iat[x, 0])
+                #print(x, y, "time: %s" % sharetime, data1.iat[x, 0], phase)
                 a=save(phase, data2.iat[y, 0], sharetime, name1, name2, list_of_phase, list_of_rooms, list_of_sharetime,
                      list_of_mouse1, list_of_mouse2)
 
             elif data1.iat[x, 1] >= data2.iat[y, 1] and data1.iat[x, 0] == data2.iat[y, 0] and data1.iat[x, 2] <= data2.iat[y, 2]:
                 sharetime = data1.iat[x, 2] - data1.iat[x, 1]
-                #print(x, y, "time: %s" % sharetime, data1.iat[x, 0])
+                #print(x, y, "time: %s" % sharetime, data1.iat[x, 0], phase)
                 a=save(phase, data2.iat[y, 0], sharetime, name1, name2, list_of_phase, list_of_rooms, list_of_sharetime,
                      list_of_mouse1, list_of_mouse2)
 
             elif data1.iat[x, 1] <= data2.iat[y, 1] and data1.iat[x, 0] == data2.iat[y, 0] and data1.iat[x, 2] <= data2.iat[y, 2] and data1.iat[x, 2] > data2.iat[y, 1]:
                 sharetime = data1.iat[x, 2] - data2.iat[y, 1]
-                #print(x, y, "time: %s" % sharetime, data1.iat[x, 0])
+                #print(x, y, "time: %s" % sharetime, data1.iat[x, 0], phase)
                 a=save(phase, data2.iat[y, 0], sharetime, name1, name2, list_of_phase, list_of_rooms, list_of_sharetime,
                      list_of_mouse1, list_of_mouse2)
             elif data1.iat[x, 2] <= data2.iat[y, 1]:
