@@ -98,15 +98,15 @@ for i in range(len(mice)):
                 room4.append(end_times[change_of_room] - start_times[change_of_room])
 
 
-        for st, en, room in zip(start_times, end_times, room_numbers):
-             print("visit to room %d, starting %f, ending %f" % (room, st, en))
+        # for st, en, room in zip(start_times, end_times, room_numbers):
+        #      print("visit to room %d, starting %f, ending %f" % (room, st, en))
 
         time1 = sum(room1)
         time2 = sum(room2)
         time3 = sum(room3)
         time4 = sum(room4)
 
-        print("----------------")
+        #print("----------------")
         # writes down the data to csv file
         with open('./output/mice.csv', 'a', newline='') as csvfile:
             writer = csv.writer(csvfile, delimiter='\t')
