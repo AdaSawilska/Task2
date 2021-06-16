@@ -3,7 +3,6 @@
 import csv
 import os
 import sys
-
 import numpy as np
 import pandas as pd
 
@@ -29,11 +28,8 @@ for phase in phases.sections():
     phase_time.append(phases.gettime(phase))
     print(phases.gettime(phase))
 
-# creates an empty list for each room {1,2,3,4}
-
 
 for i in range(len(mice)):
-
     mouse = list(mice)[i]
 
     all_rooms = []
@@ -42,13 +38,13 @@ for i in range(len(mice)):
 
     global rest, previous_room
     for j in range(len(phases.sections())):
+        # creates an empty list for each room {1,2,3,4}
         for x in range(1, 5):
             setattr(this, 'room%s' % x, [])
 
         start_times = []
         end_times = []
         room_numbers = []
-
 
         phase = phases.sections()[j]
         phase_end_time = phase_time[j][1]
@@ -57,7 +53,6 @@ for i in range(len(mice)):
         # Visits of a mouse to the rooms during one phase can be accesed like that:
         data.unmask_data()
         data.mask_data(*phases.gettime(phase))
-        # Because of masking only visits starting in the given phase are returned.
 
         #add the time which was oryginally in previous phase but time is from next
         if j>0 and rest!=0 and previous_room!=0:
@@ -72,19 +67,13 @@ for i in range(len(mice)):
         end_times.extend(data.getendtimes(mouse))
         room_numbers.extend(data.getaddresses(mouse))
 
-
-
-
-
-
         # time spend in a room
         for change_of_room in range(len(room_numbers)):
             if end_times[change_of_room] > phase_end_time:
                 rest = end_times[change_of_room] - phase_end_time
                 end_times[change_of_room] = phase_end_time
                 previous_room = room_numbers[change_of_room]
-                print(end_times[change_of_room], room_numbers[change_of_room])
-
+                #print(end_times[change_of_room], room_numbers[change_of_room])
 
             if room_numbers[change_of_room] == 1:
                 room1.append(end_times[change_of_room] - start_times[change_of_room])
