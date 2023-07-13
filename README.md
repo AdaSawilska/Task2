@@ -1,5 +1,5 @@
 # Task2
-Task about mice. The description:
+Mice data analysis. The description:
 A group of mice lives in a house with four rooms (1, 2, 3, 4).
 Mice are identified by their numbers (e.g. '0065-0136670531').
 The whole experiment lasts 3 days, and is divided into six 
